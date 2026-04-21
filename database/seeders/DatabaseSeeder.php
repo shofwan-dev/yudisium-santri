@@ -37,43 +37,59 @@ class DatabaseSeeder extends Seeder
         $guru2->assignRole($guruRole);
 
         // ── Kelas ─────────────────────────────────────────────────
-        $kelas1 = ClassRoom::create(['nama_kelas' => 'XII IPA 1']);
-        $kelas2 = ClassRoom::create(['nama_kelas' => 'XII IPS 1']);
+        $kelas6B = ClassRoom::create(['nama_kelas' => '6B']);
+        $kelas6C = ClassRoom::create(['nama_kelas' => '6C']);
+        $kelas6D = ClassRoom::create(['nama_kelas' => '6D']);
 
-        // ── Santri Kelas XII IPA 1 (7 orang) ──────────────────────
-        $santriIPA = [
-            ['no' => '001', 'nama' => 'Ahmad Fadhilah Ramadhan'],
-            ['no' => '002', 'nama' => 'Bilal Khairul Anam'],
-            ['no' => '003', 'nama' => 'Dzikri Maulana Yusuf'],
-            ['no' => '004', 'nama' => 'Faris Abdurrahman Hadi'],
-            ['no' => '005', 'nama' => 'Ghifari Naufal Akbar'],
-            ['no' => '006', 'nama' => 'Haikal Rizki Pratama'],
-            ['no' => '007', 'nama' => 'Ibrahim Hakim Santoso'],
+        // ── Data Santri ───────────────────────────────────────────
+        $studentsData = [
+            '6B' => [
+                'Ahnap Muhamad Naja', 'Al Udaish', 'Andra Darmawan Pratama', 'Athalya Surya Khallyssa Jacinda',
+                'Aurelya Surya Belva Damara', 'Fahmi Al Fadhilah', 'Halwa Filzah zhafira Annisa', 'Hanifa Askaryniamy',
+                'Ivan Aji Pramana', 'Kanza Ayu Soleha', 'Khansa Muthmainnah Fairuz', 'M. Sandy Luthfy Mubarok',
+                'Masya Nabilla Indalusia', 'Milka Aqmaira Zahwatunnisa', 'Millati Azka Hanifa', 'Moch. Fadel Al Farizi',
+                'Muhammad Neder Indie', 'Muhammad Rifqy Assiddiqi', 'Muhammad Zakky Taufiqurrohman', 'Nabil Qadira Risyhad',
+                'Nabila Maulida Nurul Janah', 'Novy Rismawati', 'Pradika Satrya Ramadhan', 'Rayhan Setya Pratama',
+                'Satria', 'Sidik Nur Alam', 'Sylvi Rahayu', 'Zakia Zahrotul Aini'
+            ],
+            '6C' => [
+                'A. Luhung Dhiya Pratama', 'Adrian Wasillah Al Furqon', 'Afkarrina Kamilah', 'Akbar Firmansyah',
+                'Arizky Gunadi Jaya', 'Aura Al Syifa', 'Daffa Dzaki Mubarok', 'Elvina Farida', 'Febrian Ichsan Rusmawan',
+                'Hafizd Muhammad Fawaz Navaro', 'Hasbi Aditya Rahman', 'Intan Nurbudiati', 'Jiyan Nasrullohilfathu',
+                "M. N. Ma'arif Tobiyas", 'Mariyah Taqiyyah Hasna', 'Marwan Hafis Ilhami', 'Moh Rouf Rahman',
+                'Muhammad Fakhri Fadhilah', 'Muhammad Fakhri Rizki Al Haqqi', 'Muhammad Gibran Al Khatani',
+                'Muhammad Habibie Hidayat', 'Muhammad Naufal Irsyad', 'Muhammad Rafi Yazid Imansyah', 'Nauval Latif Firdaus',
+                'Nayma Geida Maulana', 'Nazhif Ammar', 'Qanita Muthmainatunnisa', 'Radhidhia Mahdi Assyakha',
+                'Rajwa Azhar Havilah', 'Rauf Maulana Yusuf', 'Redhas Ril Fajri', 'Refan Esa Sopian', 'Reyna Renata Salsabila',
+                'Ridho Muhammad Ihsan', 'Rifani Alia Zahra', 'Salsabila Kamila Zahra', 'Sandria Arisita', 'Sigit Ardis Admaja',
+                'Sutego Siko', 'Wikry Cahya Ramadhan'
+            ],
+            '6D' => [
+                'Alfin Ardiansyah', 'Anisa Salsabila', 'Assyifa Mufidah Gunawan', 'Azizz Rizkulloh Kurniawan',
+                'Elfaiza reihana Aulia', 'Habib Subhan Khoiri', 'Hasya Hisyam Rosalba', 'Itsna Alima Suparno',
+                'Keisha Elviana Cyrilla', 'Leila Maulida', 'Mohammad Aidil Imam', 'Muhamad Dira Firmansyah',
+                'Muhamad Zulfikri', 'Muhammad Arga Abhipraya', 'Muhammad Fathir Mubarok', 'Mutia Nabila Luthfi',
+                "Najmah Nursa'adah", 'Nur Fatimah Azzahra', 'Pelangi Aulian Jiri Pangrango', 'Raeyhan Putraku Firmansyah',
+                'Salsa Aulia Maharani', 'Siti Zahra Hasifa', 'Soraya Larasati Al-Rasyid', 'Talitha Izzah Afiyah S'
+            ],
         ];
 
-        foreach ($santriIPA as $s) {
-            Student::create([
-                'no'       => $s['no'],
-                'nama'     => $s['nama'],
-                'kelas_id' => $kelas1->id,
-                'foto'     => null,
-            ]);
-        }
-
-        // ── Santri Kelas XII IPS 1 (5 orang) ──────────────────────
-        $santriIPS = [
-            ['no' => '008', 'nama' => 'Jasim Nurul Haq'],
-            ['no' => '009', 'nama' => 'Khalid Bin Walid Putra'],
-            ['no' => '010', 'nama' => 'Luqman Hakim Wijaya'],
+        $kelasMap = [
+            '6B' => $kelas6B,
+            '6C' => $kelas6C,
+            '6D' => $kelas6D,
         ];
 
-        foreach ($santriIPS as $s) {
-            Student::create([
-                'no'       => $s['no'],
-                'nama'     => $s['nama'],
-                'kelas_id' => $kelas2->id,
-                'foto'     => null,
-            ]);
+        $no = 1;
+        foreach ($studentsData as $kelasName => $students) {
+            foreach ($students as $nama) {
+                Student::create([
+                    'no'       => str_pad($no++, 3, '0', STR_PAD_LEFT),
+                    'nama'     => $nama,
+                    'kelas_id' => $kelasMap[$kelasName]->id,
+                    'foto'     => null,
+                ]);
+            }
         }
 
         // ── App Settings ──────────────────────────────────────────
