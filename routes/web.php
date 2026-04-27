@@ -31,6 +31,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('gurus', GuruController::class);
     Route::get('/students-export', [StudentController::class, 'export'])->name('students.export');
     Route::get('/students/{student}/export', [StudentController::class, 'exportSingle'])->name('students.export_single');
+    Route::get('/students-template', [StudentController::class, 'downloadTemplate'])->name('students.template');
+    Route::post('/students-import', [StudentController::class, 'import'])->name('students.import');
+    Route::get('/gurus-template', [GuruController::class, 'downloadTemplate'])->name('gurus.template');
+    Route::post('/gurus-import', [GuruController::class, 'import'])->name('gurus.import');
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');

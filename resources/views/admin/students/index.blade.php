@@ -23,6 +23,13 @@
             </div>
             @endif
 
+            @if(session('error'))
+            <div class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 shadow-sm" role="alert">
+                <svg class="flex-shrink-0 w-4 h-4 mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/></svg>
+                {{ session('error') }}
+            </div>
+            @endif
+
             <!-- Filter & Export Bar -->
             <div class="bg-white shadow-sm rounded-xl p-4 mb-4">
                 <form id="filterForm" action="{{ route('admin.students.index') }}" method="GET"
@@ -55,15 +62,92 @@
                         ✕ Reset
                     </a>
 
-                    <!-- Export Button -->
-                    <div class="sm:ml-auto">
+                    <!-- Export & Import Buttons -->
+                    <div class="sm:ml-auto flex flex-wrap gap-2">
                         <a href="{{ route('admin.students.export', ['kelas_id' => request('kelas_id')]) }}"
                            class="inline-flex items-center gap-2 text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-300 font-semibold rounded-lg text-sm px-4 py-2.5 transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             Export Excel
                         </a>
+                        <button type="button" onclick="document.getElementById('importStudentPanel').classList.toggle('hidden')"
+                                class="inline-flex items-center gap-2 text-white font-semibold rounded-lg text-sm px-4 py-2.5 transition shadow-md"
+                                style="background-color:#2563EB;" onmouseover="this.style.backgroundColor='#1D4ED8'" onmouseout="this.style.backgroundColor='#2563EB'">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                            Import Excel
+                        </button>
                     </div>
                 </form>
+            </div>
+
+            <!-- Import Panel -->
+            <div id="importStudentPanel" class="hidden bg-white shadow-sm rounded-xl p-5 mb-4 border-l-4 border-blue-500">
+                <div class="flex items-start gap-3 mb-4">
+                    <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900">Import / Update Data Santri</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Upload file Excel untuk menambah atau memperbarui data santri secara massal</p>
+                    </div>
+                </div>
+
+                <form action="{{ route('admin.students.import') }}" method="POST" enctype="multipart/form-data"
+                      class="flex flex-col sm:flex-row gap-3 items-end">
+                    <div class="flex-1 w-full">
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Pilih File Excel (.xlsx, .xls, .csv)</label>
+                        <input type="file" name="file" accept=".xlsx,.xls,.csv" required
+                               class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                    </div>
+                    @csrf
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 text-white font-semibold rounded-lg text-sm px-5 py-2.5 transition whitespace-nowrap shadow-md"
+                            style="background-color:#2563EB;" onmouseover="this.style.backgroundColor='#1D4ED8'" onmouseout="this.style.backgroundColor='#2563EB'">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Upload & Import
+                    </button>
+                </form>
+
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-gray-700">📋 Format Template:</span>
+                        <a href="{{ route('admin.students.template') }}"
+                           class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Download Template
+                        </a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left text-gray-600">
+                            <thead>
+                                <tr class="bg-gray-200 text-gray-700">
+                                    <th class="px-3 py-1.5 font-bold">id</th>
+                                    <th class="px-3 py-1.5 font-bold">no</th>
+                                    <th class="px-3 py-1.5 font-bold">nama</th>
+                                    <th class="px-3 py-1.5 font-bold">kelas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-200">
+                                    <td class="px-3 py-1.5 text-gray-400 italic">1</td>
+                                    <td class="px-3 py-1.5">001</td>
+                                    <td class="px-3 py-1.5">Ahmad Fauzi</td>
+                                    <td class="px-3 py-1.5">6B</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-1.5 text-gray-400 italic">(kosong)</td>
+                                    <td class="px-3 py-1.5">002</td>
+                                    <td class="px-3 py-1.5">Siti Aminah</td>
+                                    <td class="px-3 py-1.5">6C</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-xs text-gray-500">• <strong>id</strong> diisi → data santri akan di-<em>update</em>. Dikosongkan → data <em>baru</em> akan ditambahkan.</p>
+                        <p class="text-xs text-gray-500">• <strong>kelas</strong> harus sesuai nama kelas yang sudah terdaftar (contoh: 6B, 6C, 6D).</p>
+                        <p class="text-xs text-gray-500">• Download template di atas untuk mendapatkan data santri saat ini yang siap diedit.</p>
+                    </div>
+                </div>
             </div>
 
             @php

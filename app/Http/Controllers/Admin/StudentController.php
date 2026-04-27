@@ -7,6 +7,8 @@ use App\Models\Student;
 use App\Models\ClassRoom;
 use App\Exports\StudentsExport;
 use App\Exports\StudentDetailExport;
+use App\Exports\StudentsTemplateExport;
+use App\Imports\StudentsImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -189,4 +191,71 @@ class StudentController extends Controller
         $filename = 'detail-santri-' . \Str::slug($student->nama) . '-' . date('Ymd-His') . '.xlsx';
         return Excel::download(new StudentDetailExport($student->id), $filename);
     }
+
+    public function downloadTemplate()
+    {
+        $filename = 'template-santri-' . date('Ymd-His') . '.xlsx';
+        return Excel::download(new StudentsTemplateExport(), $filename);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+        ], [
+            'file.required' => 'File Excel wajib dipilih.',
+            'file.mimes'    => 'Format file harus .xlsx, .xls, atau .csv.',
+            'file.max'      => 'Ukuran file maksimal 5MB.',
+        ]);
+
+        try {
+            // Use native PHP file handling (same approach as saveFoto)
+            // to avoid Laravel FilesystemAdapter "Path cannot be empty" on Windows
+            if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+                return redirect()->route('admin.students.index')
+                    ->with('error', 'Gagal upload file.');
+            }
+
+            $tmpFile  = $_FILES['file']['tmp_name'];
+            $origName = $_FILES['file']['name'];
+            $ext      = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+
+            $tempDir = storage_path('app' . DIRECTORY_SEPARATOR . 'temp');
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir, 0775, true);
+            }
+
+            $tempFile = $tempDir . DIRECTORY_SEPARATOR . 'import_' . uniqid() . '.' . $ext;
+
+            if (!move_uploaded_file($tmpFile, $tempFile)) {
+                return redirect()->route('admin.students.index')
+                    ->with('error', 'Gagal menyimpan file sementara.');
+            }
+
+            $import = new StudentsImport();
+            Excel::import($import, $tempFile);
+
+            // Clean up temp file
+            @unlink($tempFile);
+
+            $updated = $import->getUpdatedCount();
+            $created = $import->getCreatedCount();
+            $skipped = $import->getSkippedCount();
+            $failures = $import->failures();
+
+            $message = "Import selesai! Diperbarui: {$updated}, Ditambahkan: {$created}";
+            if ($skipped > 0) {
+                $message .= ", Dilewati: {$skipped}";
+            }
+            if ($failures->count() > 0) {
+                $message .= ", Gagal validasi: {$failures->count()} baris";
+            }
+
+            return redirect()->route('admin.students.index')->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.students.index')
+                ->with('error', 'Gagal import: ' . $e->getMessage());
+        }
+    }
 }
+
