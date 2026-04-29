@@ -90,8 +90,18 @@
                                 </th>
                                 {{-- Tanggung Jawab --}}
                                 <th class="px-2 py-3.5 text-center font-semibold border-l-2 border-white/20" colspan="2"
-                                    style="background:rgba(255,255,255,0.10)">
+                                    style="background:rgba(255,255,255,0.06)">
                                     TANGGUNG JAWAB
+                                </th>
+                                {{-- Ibadah --}}
+                                <th class="px-2 py-3.5 text-center font-semibold border-l-2 border-white/20" colspan="2"
+                                    style="background:rgba(255,255,255,0.10)">
+                                    IBADAH
+                                </th>
+                                {{-- Kepemimpinan --}}
+                                <th class="px-2 py-3.5 text-center font-semibold border-l-2 border-white/20" colspan="2"
+                                    style="background:rgba(255,255,255,0.06)">
+                                    KEPEMIMPINAN
                                 </th>
                                 <th class="px-3 py-3.5 text-center font-semibold w-24">AKSI</th>
                             </tr>
@@ -107,6 +117,12 @@
                                 {{-- TJ sub --}}
                                 <th class="px-2 py-2 text-center border-l-2 border-white/20">Nilai</th>
                                 <th class="px-2 py-2 text-center">Predikat</th>
+                                {{-- Ibadah sub --}}
+                                <th class="px-2 py-2 text-center border-l-2 border-white/20">Nilai</th>
+                                <th class="px-2 py-2 text-center">Predikat</th>
+                                {{-- Kepemimpinan sub --}}
+                                <th class="px-2 py-2 text-center border-l-2 border-white/20">Nilai</th>
+                                <th class="px-2 py-2 text-center">Predikat</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -119,6 +135,8 @@
                                     akhlak:     {{ $score?->akhlak_nilai ?? 'null' }},
                                     disiplin:   {{ $score?->disiplin_nilai ?? 'null' }},
                                     tj:         {{ $score?->tanggung_jawab_nilai ?? 'null' }},
+                                    ibadah:     {{ $score?->ibadah_nilai ?? 'null' }},
+                                    kpm:        {{ $score?->kepemimpinan_nilai ?? 'null' }},
                                     saved:      {{ $score ? 'true' : 'false' }},
                                     saving:     false,
                                     timer:      null,
@@ -159,7 +177,9 @@
                                                 student_id:           this.studentId,
                                                 akhlak_nilai:         this.akhlak,
                                                 disiplin_nilai:       this.disiplin,
-                                                tanggung_jawab_nilai: this.tj
+                                                tanggung_jawab_nilai: this.tj,
+                                                ibadah_nilai:         this.ibadah,
+                                                kepemimpinan_nilai:   this.kpm
                                             })
                                         })
                                         .then(r => r.json())
@@ -261,6 +281,36 @@
                                           :class="badgeClass(tj)"
                                           x-text="predikat(tj)">-</span>
                                 </td>
+                                {{-- Ibadah: Nilai --}}
+                                <td class="px-2 py-3 border-l border-gray-100">
+                                    <input type="number" min="0" max="100"
+                                           x-model="ibadah"
+                                           @input="scheduleAutoSave()"
+                                           class="w-16 text-center text-sm font-semibold border rounded-lg py-1.5 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition
+                                                  bg-gray-50 border-gray-200 text-gray-800"
+                                           placeholder="0-100">
+                                </td>
+                                {{-- Ibadah: Predikat --}}
+                                <td class="px-2 py-3">
+                                    <span class="inline-flex items-center justify-center w-12 h-7 rounded-full text-xs font-bold transition"
+                                          :class="badgeClass(ibadah)"
+                                          x-text="predikat(ibadah)">-</span>
+                                </td>
+                                {{-- Kepemimpinan: Nilai --}}
+                                <td class="px-2 py-3 border-l border-gray-100">
+                                    <input type="number" min="0" max="100"
+                                           x-model="kpm"
+                                           @input="scheduleAutoSave()"
+                                           class="w-16 text-center text-sm font-semibold border rounded-lg py-1.5 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition
+                                                  bg-gray-50 border-gray-200 text-gray-800"
+                                           placeholder="0-100">
+                                </td>
+                                {{-- Kepemimpinan: Predikat --}}
+                                <td class="px-2 py-3">
+                                    <span class="inline-flex items-center justify-center w-12 h-7 rounded-full text-xs font-bold transition"
+                                          :class="badgeClass(kpm)"
+                                          x-text="predikat(kpm)">-</span>
+                                </td>
 
                                 {{-- Aksi: Status + Edit --}}
                                 <td class="px-3 py-3 text-center whitespace-nowrap">
@@ -288,7 +338,9 @@
                                                     nama: '{{ addslashes($student->nama) }}',
                                                     akhlak: akhlak,
                                                     disiplin: disiplin,
-                                                    tj: tj
+                                                    tj: tj,
+                                                    ibadah: ibadah,
+                                                    kpm: kpm
                                                 })"
                                                 class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-lg transition"
                                                 style="background:#e8f0fe;color:#1e3a5f;"
@@ -432,6 +484,38 @@
                               x-text="predikat(form.tj)">-</span>
                     </div>
                 </div>
+
+                {{-- Ibadah --}}
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Ibadah</label>
+                        <input type="number" min="0" max="100" x-model="form.ibadah"
+                               @input="calcPredikat()"
+                               class="w-full text-center text-sm font-semibold border rounded-lg py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none bg-gray-50 border-gray-200"
+                               placeholder="0 - 100">
+                    </div>
+                    <div class="text-center pt-5">
+                        <span class="inline-flex items-center justify-center w-16 h-8 rounded-full text-sm font-bold"
+                              :class="badgeClass(form.ibadah)"
+                              x-text="predikat(form.ibadah)">-</span>
+                    </div>
+                </div>
+
+                {{-- Kepemimpinan --}}
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Kepemimpinan</label>
+                        <input type="number" min="0" max="100" x-model="form.kpm"
+                               @input="calcPredikat()"
+                               class="w-full text-center text-sm font-semibold border rounded-lg py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none bg-gray-50 border-gray-200"
+                               placeholder="0 - 100">
+                    </div>
+                    <div class="text-center pt-5">
+                        <span class="inline-flex items-center justify-center w-16 h-8 rounded-full text-sm font-bold"
+                              :class="badgeClass(form.kpm)"
+                              x-text="predikat(form.kpm)">-</span>
+                    </div>
+                </div>
             </div>
 
             {{-- Footer --}}
@@ -482,7 +566,7 @@
                 isOpen: false,
                 saving: false,
                 successMsg: '',
-                form: { id: null, nama: '', akhlak: null, disiplin: null, tj: null },
+                form: { id: null, nama: '', akhlak: null, disiplin: null, tj: null, ibadah: null, kpm: null },
 
                 open(detail) {
                     this.form = {
@@ -491,6 +575,8 @@
                         akhlak:   detail.akhlak,
                         disiplin: detail.disiplin,
                         tj:       detail.tj,
+                        ibadah:   detail.ibadah,
+                        kpm:      detail.kpm,
                     };
                     this.successMsg = '';
                     this.isOpen = true;
@@ -535,7 +621,9 @@
                             student_id:           this.form.id,
                             akhlak_nilai:         this.form.akhlak,
                             disiplin_nilai:       this.form.disiplin,
-                            tanggung_jawab_nilai: this.form.tj
+                            tanggung_jawab_nilai: this.form.tj,
+                            ibadah_nilai:         this.form.ibadah,
+                            kepemimpinan_nilai:   this.form.kpm
                         })
                     })
                     .then(r => r.json())
@@ -550,6 +638,8 @@
                                     akhlak:   this.form.akhlak,
                                     disiplin: this.form.disiplin,
                                     tj:       this.form.tj,
+                                    ibadah:   this.form.ibadah,
+                                    kpm:      this.form.kpm,
                                 }
                             }));
                             setTimeout(() => this.close(), 1200);

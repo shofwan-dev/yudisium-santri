@@ -11,6 +11,10 @@
             <th>Disiplin - Predikat</th>
             <th>Tanggung Jawab - Nilai</th>
             <th>Tanggung Jawab - Predikat</th>
+            <th>Ibadah - Nilai</th>
+            <th>Ibadah - Predikat</th>
+            <th>Kepemimpinan - Nilai</th>
+            <th>Kepemimpinan - Predikat</th>
         </tr>
     </thead>
     <tbody>
@@ -34,6 +38,10 @@
                     <td>{{ $score->disiplin_predikat ?? '-' }}</td>
                     <td>{{ $score->tanggung_jawab_nilai ?? '-' }}</td>
                     <td>{{ $score->tanggung_jawab_predikat ?? '-' }}</td>
+                    <td>{{ $score->ibadah_nilai ?? '-' }}</td>
+                    <td>{{ $score->ibadah_predikat ?? '-' }}</td>
+                    <td>{{ $score->kepemimpinan_nilai ?? '-' }}</td>
+                    <td>{{ $score->kepemimpinan_predikat ?? '-' }}</td>
                 </tr>
                 @endforeach
 
@@ -42,6 +50,8 @@
                     $avgAkhlak   = round($scores->avg('akhlak_nilai'));
                     $avgDisiplin = round($scores->avg('disiplin_nilai'));
                     $avgTj       = round($scores->avg('tanggung_jawab_nilai'));
+                    $avgIbadah   = round($scores->avg('ibadah_nilai'));
+                    $avgKpm      = round($scores->avg('kepemimpinan_nilai'));
                 @endphp
                 <tr>
                     <td>{{ $s->no ?? ($i + 1) }}</td>
@@ -54,6 +64,10 @@
                     <td>{{ \App\Models\Score::getPredikat($avgDisiplin) }}</td>
                     <td>{{ $avgTj }}</td>
                     <td>{{ \App\Models\Score::getPredikat($avgTj) }}</td>
+                    <td>{{ $avgIbadah }}</td>
+                    <td>{{ \App\Models\Score::getPredikat($avgIbadah) }}</td>
+                    <td>{{ $avgKpm }}</td>
+                    <td>{{ \App\Models\Score::getPredikat($avgKpm) }}</td>
                 </tr>
             @else
                 <tr>
@@ -61,6 +75,10 @@
                     <td>{{ $s->nama }}</td>
                     <td>{{ $s->classRoom->nama_kelas }}</td>
                     <td>Belum dinilai</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
                     <td>-</td>
                     <td>-</td>
                     <td>-</td>

@@ -18,6 +18,10 @@ class Score extends Model
         'disiplin_predikat',
         'tanggung_jawab_nilai',
         'tanggung_jawab_predikat',
+        'ibadah_nilai',
+        'ibadah_predikat',
+        'kepemimpinan_nilai',
+        'kepemimpinan_predikat',
     ];
 
     public function student()

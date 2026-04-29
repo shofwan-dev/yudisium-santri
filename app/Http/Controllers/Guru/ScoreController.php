@@ -45,6 +45,8 @@ class ScoreController extends Controller
             'akhlak_nilai'         => 'nullable|numeric|min:0|max:100',
             'disiplin_nilai'       => 'nullable|numeric|min:0|max:100',
             'tanggung_jawab_nilai' => 'nullable|numeric|min:0|max:100',
+            'ibadah_nilai'         => 'nullable|numeric|min:0|max:100',
+            'kepemimpinan_nilai'   => 'nullable|numeric|min:0|max:100',
         ]);
 
         $score = Score::updateOrCreate(
@@ -59,6 +61,10 @@ class ScoreController extends Controller
                 'disiplin_predikat'        => Score::getPredikat($validated['disiplin_nilai']),
                 'tanggung_jawab_nilai'     => $validated['tanggung_jawab_nilai'],
                 'tanggung_jawab_predikat'  => Score::getPredikat($validated['tanggung_jawab_nilai']),
+                'ibadah_nilai'             => $validated['ibadah_nilai'],
+                'ibadah_predikat'          => Score::getPredikat($validated['ibadah_nilai']),
+                'kepemimpinan_nilai'       => $validated['kepemimpinan_nilai'],
+                'kepemimpinan_predikat'    => Score::getPredikat($validated['kepemimpinan_nilai']),
             ]
         );
 
@@ -67,6 +73,8 @@ class ScoreController extends Controller
             'akhlak_predikat'   => $score->akhlak_predikat,
             'disiplin_predikat' => $score->disiplin_predikat,
             'tj_predikat'       => $score->tanggung_jawab_predikat,
+            'ibadah_predikat'   => $score->ibadah_predikat,
+            'kpm_predikat'      => $score->kepemimpinan_predikat,
         ]);
     }
 
@@ -81,6 +89,8 @@ class ScoreController extends Controller
             'scores.*.akhlak_nilai'            => 'nullable|numeric|min:0|max:100',
             'scores.*.disiplin_nilai'          => 'nullable|numeric|min:0|max:100',
             'scores.*.tanggung_jawab_nilai'    => 'nullable|numeric|min:0|max:100',
+            'scores.*.ibadah_nilai'            => 'nullable|numeric|min:0|max:100',
+            'scores.*.kepemimpinan_nilai'      => 'nullable|numeric|min:0|max:100',
         ]);
 
         foreach ($request->scores as $row) {
@@ -96,6 +106,10 @@ class ScoreController extends Controller
                     'disiplin_predikat'       => Score::getPredikat($row['disiplin_nilai'] ?? null),
                     'tanggung_jawab_nilai'    => $row['tanggung_jawab_nilai'] ?? null,
                     'tanggung_jawab_predikat' => Score::getPredikat($row['tanggung_jawab_nilai'] ?? null),
+                    'ibadah_nilai'            => $row['ibadah_nilai'] ?? null,
+                    'ibadah_predikat'         => Score::getPredikat($row['ibadah_nilai'] ?? null),
+                    'kepemimpinan_nilai'      => $row['kepemimpinan_nilai'] ?? null,
+                    'kepemimpinan_predikat'   => Score::getPredikat($row['kepemimpinan_nilai'] ?? null),
                 ]
             );
         }

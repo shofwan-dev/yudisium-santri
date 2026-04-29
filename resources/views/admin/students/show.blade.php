@@ -53,9 +53,11 @@
                 @if($student->scores->isNotEmpty())
                 @php
                     $scores      = $student->scores;
-                    $avgAkhlak   = round($scores->avg('akhlak_nilai'));
+                                        $avgAkhlak   = round($scores->avg('akhlak_nilai'));
                     $avgDisiplin = round($scores->avg('disiplin_nilai'));
                     $avgTj       = round($scores->avg('tanggung_jawab_nilai'));
+                    $avgIbadah   = round($scores->avg('ibadah_nilai'));
+                    $avgKpm      = round($scores->avg('kepemimpinan_nilai'));
                 @endphp
                 <div class="sm:ml-auto flex flex-col sm:flex-row items-center gap-6 sm:gap-8 bg-gray-50/50 sm:bg-transparent rounded-xl p-4 sm:p-0 mt-4 sm:mt-0">
                     <div class="flex gap-4">
@@ -63,6 +65,8 @@
                             ['label' => 'Akhlak', 'val' => $avgAkhlak,   'color' => 'amber'],
                             ['label' => 'Disiplin','val' => $avgDisiplin, 'color' => 'blue'],
                             ['label' => 'T. Jawab','val' => $avgTj,       'color' => 'purple'],
+                            ['label' => 'Ibadah','val' => $avgIbadah,    'color' => 'green'],
+                            ['label' => 'Kepemimpinan','val' => $avgKpm, 'color' => 'indigo'],
                         ] as $avg)
                         <div class="text-center">
                             <div class="text-3xl font-black" style="color:#1e3a5f;">{{ $avg['val'] }}</div>
@@ -110,6 +114,8 @@
                                 <th class="px-4 py-3 text-center" colspan="2" style="background:rgba(255,255,255,0.05)">Akhlak</th>
                                 <th class="px-4 py-3 text-center" colspan="2">Disiplin</th>
                                 <th class="px-4 py-3 text-center" colspan="2" style="background:rgba(255,255,255,0.05)">Tanggung Jawab</th>
+                            <th class="px-4 py-3 text-center" colspan="2" style="background:rgba(255,255,255,0.05)">Ibadah</th>
+                            <th class="px-4 py-3 text-center" colspan="2" style="background:rgba(255,255,255,0.05)">Kepemimpinan</th>
                                 <th class="px-4 py-3 text-center">Tanggal</th>
                             </tr>
                             <tr class="bg-gray-50 text-xs text-gray-500 uppercase border-b">
@@ -181,6 +187,34 @@
                                     @else <span class="text-gray-400">-</span> @endif
                                 </td>
 
+                                <!-- Ibadah -->
+                                <td class="px-3 py-3 text-center bg-green-50 font-bold text-gray-800">
+                                    {{ $score->ibadah_nilai ?? '-' }}
+                                </td>
+                                <td class="px-3 py-3 text-center bg-green-50">
+                                    @if($score->ibadah_predikat)
+                                        @php $p = $score->ibadah_predikat; @endphp
+                                        <span class="px-2 py-0.5 rounded-full text-xs font-bold
+                                            {{ $p === 'TB' ? 'bg-green-600 text-white' : ($p === 'BS' ? 'bg-blue-500 text-white' : ($p === 'B' ? 'bg-sky-400 text-white' : ($p === 'C' ? 'bg-yellow-400 text-white' : 'bg-red-500 text-white'))) }}">
+                                            {{ $p }}
+                                        </span>
+                                    @else <span class="text-gray-400">-</span> @endif
+                                </td>
+
+                                <!-- Kepemimpinan -->
+                                <td class="px-3 py-3 text-center bg-indigo-50 font-bold text-gray-800">
+                                    {{ $score->kepemimpinan_nilai ?? '-' }}
+                                </td>
+                                <td class="px-3 py-3 text-center bg-indigo-50">
+                                    @if($score->kepemimpinan_predikat)
+                                        @php $p = $score->kepemimpinan_predikat; @endphp
+                                        <span class="px-2 py-0.5 rounded-full text-xs font-bold
+                                            {{ $p === 'TB' ? 'bg-green-600 text-white' : ($p === 'BS' ? 'bg-blue-500 text-white' : ($p === 'B' ? 'bg-sky-400 text-white' : ($p === 'C' ? 'bg-yellow-400 text-white' : 'bg-red-500 text-white'))) }}">
+                                            {{ $p }}
+                                        </span>
+                                    @else <span class="text-gray-400">-</span> @endif
+                                </td>
+
                                 <td class="px-4 py-3 text-center text-xs text-gray-400">
                                     {{ $score->updated_at->format('d/m/Y') }}
                                 </td>
@@ -204,8 +238,10 @@
                                         round($sc->avg('akhlak_nilai')),
                                         round($sc->avg('disiplin_nilai')),
                                         round($sc->avg('tanggung_jawab_nilai')),
+                                        round($sc->avg('ibadah_nilai')),
+                                        round($sc->avg('kepemimpinan_nilai')),
                                     ];
-                                    $fBg = ['bg-amber-100','bg-blue-100','bg-purple-100'];
+                                    $fBg = ['bg-amber-100','bg-blue-100','bg-purple-100','bg-green-100','bg-indigo-100'];
                                 @endphp
                                 @foreach($fAvg as $idx => $val)
                                     @php $prd = \App\Models\Score::getPredikat($val); @endphp

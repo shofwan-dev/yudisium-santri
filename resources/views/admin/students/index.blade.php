@@ -178,6 +178,10 @@
                                 style="background:rgba(255,255,255,0.06)">Disiplin (Rata²)</th>
                             <th class="px-4 py-3 text-center whitespace-nowrap" colspan="2"
                                 style="background:rgba(255,255,255,0.10)">Tanggung Jawab (Rata²)</th>
+                            <th class="px-4 py-3 text-center whitespace-nowrap" colspan="2"
+                                style="background:rgba(255,255,255,0.06)">Ibadah (Rata²)</th>
+                            <th class="px-4 py-3 text-center whitespace-nowrap" colspan="2"
+                                style="background:rgba(255,255,255,0.10)">Kepemimpinan (Rata²)</th>
                             <th class="px-4 py-3 text-center whitespace-nowrap">Penilai</th>
                             <th class="px-4 py-3 text-center whitespace-nowrap">Aksi</th>
                         </tr>
@@ -189,6 +193,10 @@
                             <th class="px-3 py-2 text-center font-semibold">Predikat</th>
                             <th class="px-3 py-2 text-center font-semibold">Nilai</th>
                             <th class="px-3 py-2 text-center font-semibold">Predikat</th>
+<th class="px-3 py-2 text-center font-semibold">Nilai</th>
+<th class="px-3 py-2 text-center font-semibold">Predikat</th>
+<th class="px-3 py-2 text-center font-semibold">Nilai</th>
+<th class="px-3 py-2 text-center font-semibold">Predikat</th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -203,10 +211,14 @@
                                 $avgAkhlak   = $hasScores ? round($scores->avg('akhlak_nilai'))           : null;
                                 $avgDisiplin = $hasScores ? round($scores->avg('disiplin_nilai'))          : null;
                                 $avgTj       = $hasScores ? round($scores->avg('tanggung_jawab_nilai'))    : null;
+$avgIbadah   = $hasScores ? round($scores->avg('ibadah_nilai'))               : null;
+$avgKpm      = $hasScores ? round($scores->avg('kepemimpinan_nilai'))          : null;
 
                                 $avgAkhlakP   = $avgAkhlak   !== null ? \App\Models\Score::getPredikat($avgAkhlak)   : null;
                                 $avgDisiplinP = $avgDisiplin !== null ? \App\Models\Score::getPredikat($avgDisiplin) : null;
                                 $avgTjP       = $avgTj       !== null ? \App\Models\Score::getPredikat($avgTj)       : null;
+                                $avgIbadahP   = $avgIbadah   !== null ? \App\Models\Score::getPredikat($avgIbadah)   : null;
+                                $avgKpmP      = $avgKpm      !== null ? \App\Models\Score::getPredikat($avgKpm)      : null;
 
                                 $fotoUrl = null;
                                 if ($s->foto) {
@@ -270,6 +282,10 @@
                                         <span class="text-gray-400">-</span>
                                     @endif
                                 </td>
+<td class="px-3 py-3 text-center bg-green-50 font-bold text-gray-800">{{ $avgIbadah ?? '-' }}</td>
+<td class="px-3 py-3 text-center bg-green-50">@if($avgIbadahP)<span class="px-2 py-0.5 rounded-full text-xs font-bold {{ predikatBadgeClass($avgIbadahP) }}">{{ $avgIbadahP }}</span>@else<span class="text-gray-400">-</span>@endif</td>
+<td class="px-3 py-3 text-center bg-red-50 font-bold text-gray-800">{{ $avgKpm ?? '-' }}</td>
+<td class="px-3 py-3 text-center bg-red-50">@if($avgKpmP)<span class="px-2 py-0.5 rounded-full text-xs font-bold {{ predikatBadgeClass($avgKpmP) }}">{{ $avgKpmP }}</span>@else<span class="text-gray-400">-</span>@endif</td>
 
                                 {{-- Jumlah guru --}}
                                 <td class="px-4 py-3 text-center">
